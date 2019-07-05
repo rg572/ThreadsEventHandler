@@ -12,17 +12,31 @@ public class EventTracker implements Tracker {
     }
 
     synchronized public static EventTracker getInstance() {
-        return null;
+        return INSTANCE;
     }
 
     synchronized public void push(String message) {
+        tracker.merge(message, 1, Integer::sum);
     }
 
     synchronized public Boolean has(String message) {
-        return null;
+        if(tracker.get(message)==null || tracker.get(message).equals(0)){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     synchronized public void handle(String message, EventHandler e) {
+        if(tracker.get(message)!=null && tracker.get(message) > 0){
+            e.handle();
+            tracker.merge(message,-1,Integer::sum);
+        }
+    }
+
+    public Map<String, Integer> tracker(){
+        return tracker;
     }
 
     // Do not use this. This constructor is for tests only

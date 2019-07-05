@@ -1,6 +1,8 @@
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
@@ -32,12 +34,30 @@ public class EventListenerTest {
         Assert.assertTrue(tracker.eventWasHandled);
     }
 
+    @Test
+    public void runTest1(){
+        // Arrange
+        Tracker tracker = EventTracker.getInstance();
+        EventListener e1 = new EventListener("Carthage", "Must be destroyed", tracker);
+        EventListener e2 = new EventListener("Caesar", "Many a Marius", tracker);
+        e1.start();
+        e2.start();
+
+        // Act
+        tracker.push("Carthage");
+        tracker.push("Caesar");
+        tracker.push("SPQR");
+        tracker.push("Carthage");
+        tracker.push("quit");
+        tracker.push("Carthage");
+    }
+
     class TrackerMock implements Tracker {
 
         public boolean itemWasPushed;
         public boolean eventWasHandled;
 
-        @Override
+        //@Override
         public Map<String, Integer> tracker() {
             return null;
         }
@@ -48,7 +68,7 @@ public class EventListenerTest {
         }
 
         @Override
-        public boolean has(String message) {
+        public Boolean has(String message) {
             return true;
         }
 
